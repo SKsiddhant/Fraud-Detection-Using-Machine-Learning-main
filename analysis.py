@@ -88,7 +88,7 @@ categorical = ["type"]
 numeric = ["amount","oldbalanceOrg","newbalanceOrig","oldbalanceDest","newbalanceDest"]
 y = df_model["isFraud"]
 x = df_model.drop("isFraud", axis = 1)
-x_train, x_test, y_train, y_test = train_test_split(x, y , test_size=0.3, stratify=y )
+x_train, x_test, y_train, y_test = train_test_split(x, y , test_size=0.3, stratify=y, random_state=42)
 preprocessor = ColumnTransformer(
     transformers= [
         ("num", StandardScaler(), numeric),

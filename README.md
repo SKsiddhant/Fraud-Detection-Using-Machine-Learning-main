@@ -13,7 +13,7 @@ This dataset comes from Kaggle and includes approximately 6.3 million records of
 Type of Data: Tabular transaction data
 
 Key Features:
-type – Transaction category (PAYMENT, TRANSFER, CASH_OUT, DEPOSIT)
+type – Transaction category (PAYMENT, TRANSFER, CASH_OUT, CASH_IN, DEBIT)
 
 amount – Transaction amount
 
@@ -44,7 +44,7 @@ To prepare the dataset for model training, preprocessing was applied to handle c
 - A `ColumnTransformer` was used to combine these steps into a single transformation pipeline
 - Data Cleaning – Removed irrelevant columns, ensured numeric type conversions.
 - Categorical Encoding – Converted type into numerical form using one-hot encoding using `OneHotEncoder`
-- Handling Imbalance – Applied techniques such as oversampling or SMOTE to balance the dataset.
+- Handling Imbalance – `class_weight='balanced'` in the classifier (no resampling / SMOTE is used).
 - Feature Scaling – Standardized numerical columns to improve model performance.
 
 This ensured that all features were in a suitable format for model training.
@@ -61,19 +61,32 @@ A fraud detection pipeline was built, saved as fraud_detection_pipeline.pkl, and
 
 Modeling Steps:
 
-Train-Test Split: 80% training, 20% testing
+Train-Test Split: 70% training, 30% testing (stratified, `random_state=42`)
 
-Algorithms Tested:
-
-- Logistic Regression
-- Random Forest Classifier
-- Gradient Boosting / XGBoost
+Algorithm: Logistic Regression. (Random Forest and gradient-boosting models were considered but are **not** implemented in this repository.)
 
 Evaluation Metrics:
 - Precision, Recall, F1-score (Recall is prioritized to catch maximum frauds)
-- ROC-AUC score
+- ROC-AUC score (printed by `train_model.py`)
 
-Best Model: Random Forest Classifier (tuned hyperparameters) gave a good trade-off between recall and precision.
+Plain accuracy is not a useful metric here because fraud is a tiny fraction of the data; look at fraud-class precision/recall.
+
+## Running it
+
+```bash
+pip install -r requirements.txt
+streamlit run fraud_detection.py          # uses the committed fraud_detection_pipeline.pkl
+```
+
+The committed model was saved with scikit-learn **1.6.1** and only loads with that version (pinned in `requirements.txt`). To retrain with your installed version, download the Kaggle CSV as `AIML Dataset.csv` and run:
+
+```bash
+python train_model.py
+```
+
+The EDA scripts/notebook (`analysis.py`, `analysis_model.py`, `analysis_model.ipynb`) additionally need `pip install -r requirements-analysis.txt`.
+
+Tests: `pip install -r requirements-dev.txt && pytest`
 
 ## Streamlit Prediction App
 The Streamlit app serves as an easy-to-use fraud detection tool.
@@ -85,7 +98,7 @@ User Inputs:
 - Sender & Receiver Balances (Before and After Transaction)
 
 Real-Time Prediction:
-- Outputs 0 (Not Fraud) or 1 (Fraud)
+- Outputs 0 (Not Fraud) or 1 (Fraud); the transaction-type list is read from the trained model
 - Displays a green success message for genuine transactions and a red warning for potential fraud.
 
 ## Results & Evaluation
@@ -93,8 +106,6 @@ After training, the model was evaluated on the test set using:
 - **Classification Report**: Precision, Recall, F1-score
 - **Confusion Matrix**: To visualize true positives, false positives, true negatives, and false negatives
 These metrics help determine the effectiveness of the fraud detection system, with particular focus on **Recall** for the fraud class.
-
-High Accuracy in detecting fraudulent transactions with minimal false negatives.
 
 The system can be used for real-time fraud prevention in banking or payment platforms.
 

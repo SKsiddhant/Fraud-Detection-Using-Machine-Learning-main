@@ -81,12 +81,6 @@ plt.ylabel("Count")
 plt.show()
 
 
-# In[35]:
-
-
-fraud_by_type
-
-
 # In[22]:
 
 
@@ -108,7 +102,7 @@ df["amount"].describe().astype(int)
 sns.histplot(np.log1p(df["amount"]), bins=100, kde=True, color="green")
 plt.title("Transaction Amount Distribution (log scale)")
 plt.xlabel("Log(Amount + 1)")
-plt.show
+plt.show()
 
 
 # In[39]:
@@ -325,7 +319,7 @@ x = df_model.drop("isFraud", axis = 1)
 # In[76]:
 
 
-x_train, x_test, y_train, y_test = train_test_split(x, y , test_size=0.3, stratify=y )
+x_train, x_test, y_train, y_test = train_test_split(x, y , test_size=0.3, stratify=y, random_state=42)
 
 
 # In[77]:
