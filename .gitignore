@@ -1,1 +1,11 @@
-*
+__pycache__/
+*.pyc
+.venv/
+venv/
+pyvenv.cfg
+.ipynb_checkpoints/
+.pytest_cache/
+# Kaggle dataset (~470 MB) - download it yourself
+AIML Dataset.csv
+*.csv
+.DS_Store
